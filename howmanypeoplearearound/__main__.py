@@ -145,8 +145,8 @@ def scan(adapter, scantime, verbose, dictionary, number, nearby, jsonprint, out,
             t1.daemon = True
             t1.start()
 
-        tmpdir = tempfile.TemporaryDirectory()
-        dump_file = os.path.join(tmpdir.name, 'tshark-temp')
+        tmpdir = tempfile.mkdtemp()
+        dump_file = os.path.join(tmpdir, 'tshark-temp')
 
         # Scan with tshark
         # EP, 20240817: -Q flags silences non-essential output that we don't use anyway,
@@ -293,7 +293,8 @@ def scan(adapter, scantime, verbose, dictionary, number, nearby, jsonprint, out,
         if verbose:
             print("Wrote %d records to %s" % (len(cellphone_people), out))
     if tmpdir is not None:
-        tmpdir.cleanup()
+        os.remove(dump_file)
+        os.rmdir(tmpdir)
     return adapter
 
 
